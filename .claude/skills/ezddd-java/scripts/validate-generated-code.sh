@@ -622,6 +622,38 @@ fi
 text_echo ""
 
 # ─────────────────────────────────────────────────────────────
+# Marker: write pass marker for Stop hook verification
+# ─────────────────────────────────────────────────────────────
+
+write_pass_marker() {
+    # Only write marker if we have an aggregate name and 0 CRITICAL
+    if [[ $CRITICAL_COUNT -ne 0 ]]; then
+        return
+    fi
+
+    local marker_agg="${AGGREGATE:-unknown}"
+    local marker_dir="$PROJECT_ROOT/.gate25-markers"
+    mkdir -p "$marker_dir"
+
+    # Compute checksum of all scanned files
+    local files_hash
+    files_hash=$(printf '%s\n' "${ALL_FILES[@]}" | sort | xargs cat 2>/dev/null | shasum -a 256 | cut -d' ' -f1)
+
+    local marker_file="$marker_dir/${marker_agg}.marker.json"
+    cat > "$marker_file" <<MARKEREOF
+{
+  "aggregate": "$marker_agg",
+  "files_checksum": "$files_hash",
+  "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+  "critical_count": 0,
+  "warn_count": $WARN_COUNT,
+  "files_scanned": ${#ALL_FILES[@]},
+  "rules_checked": $TOTAL_RULES
+}
+MARKEREOF
+}
+
+# ─────────────────────────────────────────────────────────────
 # Summary
 # ─────────────────────────────────────────────────────────────
 
@@ -652,6 +684,7 @@ if [[ "$JSON_OUTPUT" == "true" ]]; then
   "violations": [$local_violations_str]
 }
 JSONEOF
+    write_pass_marker
     exit $([ $CRITICAL_COUNT -eq 0 ] && echo 0 || echo 1)
 fi
 
@@ -670,6 +703,7 @@ if [[ $CRITICAL_COUNT -eq 0 ]]; then
         echo -e "║  ${YELLOW}NOTE: $WARN_COUNT warning(s) — review recommended${NC}                    ║"
     fi
     echo "╚════════════════════════════════════════════════════════════════╝"
+    write_pass_marker
     exit 0
 else
     echo -e "║  ${RED}STATUS: BLOCKED${NC} ($CRITICAL_COUNT CRITICAL violation(s) found)            ║"
