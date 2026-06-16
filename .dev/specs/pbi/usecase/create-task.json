@@ -1,13 +1,13 @@
 {
   "useCase": "CreateTask",
-  "behavior": "Create a new task",
+  "behavior": "Create a new task inside a ProductBacklogItem aggregate.",
   "input": [
-    { "name": "productId", "type": "String", "note": "Product 的唯一識別碼" },
-    { "name": "pbiId", "type": "String", "note": "PBI 的唯一識別碼" },
-    { "name": "taskId", "type": "String", "note": "Task 的唯一識別碼" },
-    { "name": "name", "type": "String", "note": "Task 的顯示名稱" },
-    { "name": "estimatedHours", "type": "String", "note": "nullable, 支援小數如 '0.5', '1.5', 內部使用 BigDecimal" },
-    { "name": "creatorId", "type": "String", "note": "建立 Task 的使用者 ID, 紀錄在領域事件中" }
+    { "name": "productId", "type": "String", "note": "Product id." },
+    { "name": "pbiId", "type": "String", "note": "ProductBacklogItem id." },
+    { "name": "taskId", "type": "String", "note": "Task id." },
+    { "name": "name", "type": "String", "note": "Task name." },
+    { "name": "estimatedHours", "type": "String", "note": "Nullable decimal hours, such as 0.5, 1.5, or 8." },
+    { "name": "creatorId", "type": "String", "note": "User id that creates the task." }
   ],
   "aggregate": "ProductBacklogItem",
   "aggregateId": "PbiId",
@@ -16,50 +16,90 @@
   "repository": "ProductBacklogItemRepository",
   "output": "CqrsOutput with taskId",
   "businessRules": [
-    "當 PBI 在 DONE 狀態時創建新 task，PBI 應該退回到 IN_PROGRESS 狀態",
-    "新創建的 task 初始狀態必須是 TODO",
-    "如果提供 estimatedHours，則 remainingHours 初始值等於 estimatedHours"
+    "A task cannot be created with duplicate taskId in the same PBI.",
+    "A newly-created task has TODO state.",
+    "If estimatedHours is provided, remainingHours starts with the same value.",
+    "If PBI is DONE, creating a new task regresses PBI to IN_PROGRESS."
   ],
   "domainModelNotes": [
-    "requireNotNull(\"task ID is not null\", ()-> taskId)",
-    "requireNotNull(\"name is not null\", ()-> name)",
-    "requireNotNull(\"creator ID is not null\", ()-> creatorId)",
-    "如果 PBI.state == PbiState.DONE，需要發出 PbiWorkRegressed 事件",
-    "ensure(\"Task ID is set to {taskId}\", () -> this.taskId == taskId);",
-    "ensure(\"Task name is set to {name}\", () -> this.name == name);",
-    "ensure(\"Task estimated hours equals to remaining hours\", () -> this.estimatedHours == this.remainingHours);",
-    "ensure(\"Task initial state is TODO\", () -> this.state == TaskState.TODO);"
+    "requireNotNull(\"task ID is not null\", () -> taskId)",
+    "requireNotNull(\"name is not null\", () -> name)",
+    "requireNotNull(\"creator ID is not null\", () -> creatorId)",
+    "If state == DONE, emit PbiWorkRegressed after TaskCreated.",
+    "Aggregate accessors must expose Task as ReadOnlyTask runtime instances."
+  ],
+  "aggregates": [
+    {
+      "name": "ProductBacklogItem",
+      "attributes": [
+        { "name": "productId", "type": "ProductId", "constraint": "non-null" },
+        { "name": "pbiId", "type": "PbiId", "constraint": "non-null" },
+        { "name": "state", "type": "PbiState", "constraint": "non-null" },
+        { "name": "tasks", "type": "Map<TaskId, Task>", "constraint": "non-null", "semantics": "collection_reference_immutable" }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "name": "Task",
+      "mutable": true,
+      "exposed": true,
+      "attributes": [
+        { "name": "id", "type": "TaskId", "constraint": "non-null" },
+        { "name": "pbiId", "type": "PbiId", "constraint": "non-null" },
+        { "name": "name", "type": "String", "constraint": "non-null", "mutable": true },
+        { "name": "state", "type": "TaskState", "constraint": "non-null", "mutable": true },
+        { "name": "assigneeIds", "type": "Set<String>", "constraint": "non-null", "mutable": true },
+        { "name": "estimatedHours", "type": "EstimatedHours", "constraint": "nullable", "mutable": true },
+        { "name": "remainingHours", "type": "RemainingHours", "constraint": "nullable", "mutable": true },
+        { "name": "blockedBy", "type": "List<String>", "constraint": "non-null", "mutable": true },
+        { "name": "note", "type": "String", "constraint": "nullable", "mutable": true },
+        { "name": "extension", "type": "String", "constraint": "nullable", "mutable": true }
+      ]
+    }
   ],
   "domainEvents": [
     {
       "name": "ProductBacklogItemEvents.TaskCreated",
-      "description": "Task 已建立",
+      "description": "Task was created in a ProductBacklogItem.",
       "attributes": [
-        { "name": "productId", "type": "ProductId",  "constraint": "non-null" },
-        { "name": "pbiId", "type": "PbiId",  "constraint": "non-null" },
-        { "name": "taskId", "type": "TaskId",  "constraint": "non-null" },
-        { "name": "name", "type": "String","constraint": "non-null" },
-        { "name": "estimatedHours", "type": "EstimatedHours",  "constraint": "nullable" },
-        { "name": "remainingHours", "type": "RemainingHours",  "constraint": "nullable" },
+        { "name": "productId", "type": "ProductId", "constraint": "non-null" },
+        { "name": "pbiId", "type": "PbiId", "constraint": "non-null" },
+        { "name": "taskId", "type": "TaskId", "constraint": "non-null" },
+        { "name": "name", "type": "String", "constraint": "non-null" },
+        { "name": "estimatedHours", "type": "EstimatedHours", "constraint": "nullable" },
+        { "name": "remainingHours", "type": "RemainingHours", "constraint": "nullable" },
         { "name": "note", "type": "String", "constraint": "nullable" },
         { "name": "extension", "type": "String", "constraint": "nullable" },
-        { "name": "creatorId", "type": "String", "constraint": "non-null"}
+        { "name": "creatorId", "type": "String", "constraint": "non-null" }
       ]
     },
     {
       "name": "ProductBacklogItemEvents.PbiWorkRegressed",
-      "description": "PBI 工作倒退（當 DONE 狀態的 PBI 創建新 task 時觸發）",
+      "description": "PBI moved from DONE back to IN_PROGRESS because a new non-done task was created.",
       "attributes": [
         { "name": "productId", "type": "ProductId", "constraint": "non-null" },
         { "name": "sprintId", "type": "SprintId", "constraint": "nullable" },
         { "name": "pbiId", "type": "PbiId", "constraint": "non-null" },
-        { "name": "previousState", "type": "PbiState", "constraint": "non-null", "note": "應為 DONE" },
-        { "name": "newState", "type": "PbiState", "constraint": "non-null", "note": "應為 IN_PROGRESS" },
-        { "name": "regressedBy", "type": "String", "constraint": "non-null", "note": "與 creatorId 相同" },
-        { "name": "reason", "type": "String", "constraint": "non-null", "note": "固定為 'New task created on completed PBI'" },
+        { "name": "previousState", "type": "PbiState", "constraint": "non-null" },
+        { "name": "newState", "type": "PbiState", "constraint": "non-null" },
+        { "name": "regressedBy", "type": "String", "constraint": "non-null" },
+        { "name": "reason", "type": "String", "constraint": "non-null" },
         { "name": "extension", "type": "Map<String, String>", "constraint": "nullable" }
       ],
-      "triggerCondition": "當 PBI.state == PbiState.DONE 時"
+      "triggerCondition": "PBI.state == PbiState.DONE"
+    }
+  ],
+  "testScenarios": [
+    {
+      "name": "should_create_task_successfully",
+      "given": "A ProductBacklogItem exists.",
+      "when": "CreateTaskUseCase is executed.",
+      "then": [
+        "TaskCreated event is generated.",
+        "Aggregate getTask returns a ReadOnlyTask runtime instance.",
+        "Attempting to mutate the returned task throws UnsupportedOperationException."
+      ]
     }
   ]
 }
