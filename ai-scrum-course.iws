@@ -4,41 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9125b1ee-4e06-4d7f-944b-881da3ebaf51" name="Changes" comment="Add PBI and Task entities with corresponding DTOs and mappers">
-      <change afterPath="$PROJECT_DIR$/ai-scrum-course.iws" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/common/entity/DateProvider.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/adapter/out/memory/InMemoryTasksDtoProjection.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/entity/EstimatedHours.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/entity/PbiId.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/entity/PbiState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/entity/ProductBacklogItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/entity/ProductBacklogItemEvents.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/entity/ProductId.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/entity/ReadOnlyTask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/entity/RemainingHours.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/entity/SprintId.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/entity/Task.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/entity/TaskId.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/entity/TaskState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/io/springboot/config/ProductBacklogItemUseCaseConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/usecase/port/EstimatedHoursDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/usecase/port/EstimatedHoursMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/usecase/port/RemainingHoursDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/usecase/port/RemainingHoursMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/usecase/port/TaskDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/usecase/port/TaskMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/usecase/port/in/CreateTaskUseCase.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/usecase/port/in/GetTasksByProductBacklogItemUseCase.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/usecase/port/out/projection/TasksDtoProjection.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/usecase/service/CreateTaskService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/tw/teddysoft/aiscrum/pbi/usecase/service/GetTasksByProductBacklogItemService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/tw/teddysoft/aiscrum/pbi/entity/ProductBacklogItemReadOnlyTaskTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/tw/teddysoft/aiscrum/pbi/usecase/service/CreateTaskServiceReadOnlyEntityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/tw/teddysoft/aiscrum/pbi/usecase/service/GetTasksByProductBacklogItemServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dev/specs/pbi/usecase/create-task.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dev/specs/pbi/usecase/create-task.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.dev/specs/pbi/usecase/get-tasks-by-pbi.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dev/specs/pbi/usecase/get-tasks-by-pbi.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ai-scrum-course.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/ai-scrum-course.ipr" afterDir="false" />
-    </list>
+    <list default="true" id="9125b1ee-4e06-4d7f-944b-881da3ebaf51" name="Changes" comment="Add PBI and Task entities with corresponding DTOs and mappers" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -179,8 +145,17 @@
       <option name="presentableId" value="Default" />
       <updated>1781620640568</updated>
       <workItem from="1781620642752" duration="338000" />
-      <workItem from="1781621071862" duration="1686000" />
+      <workItem from="1781621071862" duration="2023000" />
     </task>
+    <task id="LOCAL-00001" summary="Add PBI and Task entities with corresponding DTOs and mappers">
+      <option name="closed" value="true" />
+      <created>1781622803766</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1781622803766</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
