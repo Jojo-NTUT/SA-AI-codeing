@@ -9,7 +9,8 @@
 │   ├── [Aggregate]Events.java     # Domain Events (sealed interface)
 │   ├── [Aggregate]Id.java         # Aggregate ID (record)
 │   ├── [ValueObject].java         # Value Objects (records)
-│   └── [Entity].java              # Child Entities (if any)
+│   ├── [Entity].java              # Child Entities (if any)
+│   └── ReadOnly[Entity].java      # Read-only wrapper when mutable child Entity is exposed
 └── ...
 ```
 
@@ -192,6 +193,8 @@ public sealed interface ProductEvents extends InternalDomainEvent {
 
 ## Child Entities
 
+<!-- @authority: read_only_entity_exposure | source: patterns/domain/read-only-entity.md -->
+
 ### Key Rules
 
 1. Entities have unique identity within aggregate
@@ -200,6 +203,24 @@ public sealed interface ProductEvents extends InternalDomainEvent {
 4. `equals()`/`hashCode()` based on ID only (not all fields)
 5. Reference parent aggregate ID
 6. **Field Mutability Analysis**: 決定欄位是否可變前，需分析操作語意（Create-only vs Mutable）。詳見 `patterns/domain/entity.md` § Field Mutability Analysis
+7. **Read-only Exposure**: If an aggregate returns a mutable child entity to callers, it must return `ReadOnly{Entity}` instead of the mutable instance. Read-only entities override all mutation methods to throw `UnsupportedOperationException`.
+
+### Read-only Entity Exposure
+
+```java
+// CORRECT
+public Task getTask(TaskId taskId) {
+    Task task = tasks.get(taskId);
+    return task == null ? null : new ReadOnlyTask(task);
+}
+
+// WRONG
+public Task getTask(TaskId taskId) {
+    return tasks.get(taskId);
+}
+```
+
+Collections of mutable child entities must also be converted item-by-item to read-only entities and returned as unmodifiable collections.
 
 ## Common Mistakes
 

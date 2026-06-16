@@ -98,12 +98,15 @@ This maps JSON spec fields to the pattern files and code generation targets.
 
 #### Step 4.1 — Generate Aggregate + Events
 
+<!-- @authority: read_only_entity_exposure | source: patterns/domain/read-only-entity.md -->
+
 ```
 LOAD_PATTERNS:
   - references/patterns/domain/aggregate.md
   - references/patterns/domain/domain-event.md
   - references/patterns/domain/value-object.md (if spec has valueObjects[])
   - references/patterns/domain/entity.md (if spec has entities[])
+  - references/patterns/domain/read-only-entity.md (if mutable entities are returned outside aggregate)
 ```
 
 **SOURCE**: `spec.aggregates[]`, `spec.domainEvents[]`, `spec.entities[]`, `spec.valueObjects[]`, `spec.enums[]`
@@ -120,6 +123,7 @@ LOAD_PATTERNS:
 - `MAPPING_TYPE_PREFIX` constant required
 - `DateProvider.now()` for timestamps, NOT `Instant.now()`
 - State set ONLY in `when()` method (Event Sourcing golden rule)
+- Mutable child entities exposed by aggregate accessors MUST be returned as `ReadOnly{Entity}`
 
 #### Step 4.1.5 — Generate Contract Tests (if applicable)
 

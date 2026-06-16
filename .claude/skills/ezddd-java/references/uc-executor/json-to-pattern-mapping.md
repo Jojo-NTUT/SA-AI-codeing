@@ -23,6 +23,8 @@ COMMAND sub-types (based on `method` field):
 
 ## Command UseCase Spec Fields
 
+<!-- @authority: read_only_entity_exposure | source: patterns/domain/read-only-entity.md -->
+
 | JSON Field | Code Generation Target | Pattern File |
 |------------|----------------------|-------------|
 | `spec.useCase` | UseCase interface name | `patterns/usecase/command.md` |
@@ -40,6 +42,7 @@ COMMAND sub-types (based on `method` field):
 | `spec.domainEvents[]` | Sealed interface + records | `patterns/domain/domain-event.md` |
 | `spec.domainEvents[].attributes[]` | Event record parameters | — |
 | `spec.entities[]` | Entity classes | `patterns/domain/entity.md` |
+| `spec.entities[].exposed` / inferred aggregate accessor return | `ReadOnly{Entity}` wrapper | `patterns/domain/read-only-entity.md` |
 | `spec.valueObjects[]` | Record types | `patterns/domain/value-object.md` |
 | `spec.enums[]` | Enum definitions | — |
 | `spec.constructorPreconditions[]` | `requireNotNull()` checks | `patterns/testing/contract-test.md` |

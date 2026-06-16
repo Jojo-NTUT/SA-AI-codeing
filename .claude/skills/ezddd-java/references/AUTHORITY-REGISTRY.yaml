@@ -681,6 +681,31 @@ topics:
       - file: "code-reviewer/checklist.md"
         section: "Entity Checklist"
 
+  read_only_entity_exposure:
+    description: "Aggregate accessors exposing mutable child entities MUST return ReadOnlyEntity wrappers"
+    authority: "patterns/domain/read-only-entity.md"
+    authority_line_hint: null
+    canonical_pattern: "ReadOnly"
+    anti_pattern: null
+    severity: high
+    group: domain
+    dedup_strategy: marker
+    consumers:
+      - file: "patterns/domain/aggregate.md"
+        section: "Rule 13: Read-only Entity Exposure"
+      - file: "patterns/domain/entity.md"
+        section: "Rule 11: Read-only Entity for External Exposure"
+      - file: "rules/domain-patterns.md"
+        section: "Read-only Entity Exposure"
+      - file: "code-reviewer/checklist.md"
+        section: "Read-only Entity Checklist"
+      - file: "uc-executor/uc-workflow.md"
+        section: "Step 4.1"
+      - file: "uc-executor/json-to-pattern-mapping.md"
+        section: "Command UseCase Spec Fields"
+      - file: "gate25/deterministic-review-rules.yaml"
+        section: "F-31"
+
   aggregate_no_instance_field_initializer:
     description: "Aggregate fields MUST NOT have instance initializers — state set only in when() via events"
     authority: "patterns/domain/aggregate.md"

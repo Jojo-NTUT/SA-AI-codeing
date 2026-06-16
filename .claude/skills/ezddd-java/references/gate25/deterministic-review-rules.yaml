@@ -6,7 +6,7 @@
 
 meta:
   version: "1.2"
-  description: "Data-driven rules for deterministic code review gate (30F + 15R + 5S + 1X + 4TS = 55 rules)"
+  description: "Data-driven rules for deterministic code review gate (31F + 15R + 5S + 1X + 4TS = 56 rules)"
   blocking_severity:
     - critical
   non_blocking_severity:
@@ -245,6 +245,17 @@ forbidden:
     target: "*Controller.java"
     severity: critical
     authority_ref: "security-patterns.md #6"
+
+  # --- Domain: Read-only Entity Exposure ---
+
+  # @authority: read_only_entity_exposure | source: patterns/domain/read-only-entity.md
+  - id: F-31
+    description: "Aggregate accessor may directly return mutable child entity from collection; prefer ReadOnly{Entity}"
+    pattern: 'return\s+\w+\.get\('
+    target: "entity/*.java"
+    precondition_pattern: 'extends\s+EsAggregateRoot'
+    severity: warn
+    authority_ref: "read-only-entity.md"
 
 # ═══════════════════════════════════════════════════════════════
 # REQUIRED rules: patterns that MUST appear in matching files

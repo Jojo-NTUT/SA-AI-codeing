@@ -49,6 +49,7 @@ Child Entities are distinct from Aggregate Roots and Value Objects:
 |------|----------|
 | Child Entity | `src/main/java/{rootPackage}/{aggregate}/entity/{ChildEntity}.java` |
 | Entity ID | `src/main/java/{rootPackage}/{aggregate}/entity/{ChildEntity}Id.java` |
+| Read-only Entity | `src/main/java/{rootPackage}/{aggregate}/entity/ReadOnly{ChildEntity}.java` (only when exposed outside aggregate) |
 
 ---
 
@@ -513,6 +514,27 @@ public Task(TaskId id, String name) {
 
 **Rationale:** Child entities cannot exist independently of their Aggregate.
 
+### Rule 11: Read-only Entity for External Exposure
+
+<!-- @authority: read_only_entity_exposure | source: patterns/domain/read-only-entity.md -->
+
+If a mutable child entity is returned from an aggregate accessor or use case output, generate a `ReadOnly{Entity}` wrapper and have the aggregate return that wrapper instead of the mutable entity.
+
+```java
+// CORRECT: exposed child entity is read-only
+public Task getTask(TaskId taskId) {
+    Task task = tasks.get(taskId);
+    return task == null ? null : new ReadOnlyTask(task);
+}
+
+// WRONG: caller receives mutable aggregate internals
+public Task getTask(TaskId taskId) {
+    return tasks.get(taskId);
+}
+```
+
+Read `read-only-entity.md` before generating any accessor that returns a mutable child entity.
+
 ---
 
 ## VERIFICATION CHECKPOINTS
@@ -740,6 +762,7 @@ Ensure Aggregate has:
 - Collection field for entities
 - Access methods (has, get, getAll)
 - Event handlers in when() for entity lifecycle
+- Read-only wrappers for any mutable entity returned outside the aggregate boundary
 
 ---
 

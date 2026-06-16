@@ -7,6 +7,7 @@
 | `**/entity/{Aggregate}.java` | Aggregate Root | CRITICAL |
 | `**/entity/*Events.java` | Domain Event | CRITICAL |
 | `**/entity/*Id.java` | Value Object (ID) | HIGH |
+| `**/entity/ReadOnly*.java` | Read-only Entity | HIGH |
 | `**/entity/*.java` (class) | Entity (Internal) | MEDIUM |
 | `**/entity/*.java` (record) | Value Object | MEDIUM |
 | `**/entity/*State.java` (enum) | Enum | LOW (SKIP) |
@@ -75,6 +76,7 @@ public void start() {
 - [ ] Has soft-delete support (uses **inherited** `isDeleted` from `EsAggregateRoot`, do NOT declare own field)
 - [ ] Uses `if (ignore(...)) return;` for idempotency
 - [ ] **MUST NOT declare `version` or `isDeleted` fields** — inherited from `EsAggregateRoot` (field shadowing causes silent failures: `isDeleted()` always returns `false`, `getVersion()` always returns `0`)
+- [ ] **Read-only exposure**: accessors returning mutable child entities return `ReadOnly{Entity}`, not mutable internal references
 
 **Semantics Compliance:**
 
@@ -153,11 +155,23 @@ public sealed interface ProductEvents extends InternalDomainEvent {
 
 ### Entity (Internal) Checklist (MEDIUM)
 
+<!-- @authority: read_only_entity_exposure | source: patterns/domain/read-only-entity.md -->
+
 - [ ] Implements `Entity<ID>` interface
 - [ ] Uses `Objects.requireNonNull()` (NOT Contract)
 - [ ] Has `equals/hashCode` based on ID
 - [ ] Only accessible through Aggregate Root
 - [ ] No direct repository access
+- [ ] If exposed outside the aggregate, has a matching `ReadOnly{Entity}` wrapper
+
+### Read-only Entity Checklist (HIGH)
+
+- [ ] Named `ReadOnly{Entity}` and located in the same `entity` package
+- [ ] Constructor accepts the mutable `{Entity}` instance
+- [ ] All mutation methods are overridden and throw `UnsupportedOperationException`
+- [ ] Query methods returning mutable child entities wrap them in read-only entities
+- [ ] Query methods returning collections return unmodifiable collections
+- [ ] Has no framework, repository, persistence, or adapter dependencies
 
 ---
 
