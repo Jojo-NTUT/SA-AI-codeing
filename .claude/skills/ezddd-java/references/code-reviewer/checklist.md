@@ -169,8 +169,9 @@ public sealed interface ProductEvents extends InternalDomainEvent {
 - [ ] Named `ReadOnly{Entity}` and located in the same `entity` package
 - [ ] Constructor accepts the mutable `{Entity}` instance
 - [ ] All mutation methods are overridden and throw `UnsupportedOperationException`
-- [ ] Query methods returning mutable child entities wrap them in read-only entities
-- [ ] Query methods returning collections return unmodifiable collections
+- [ ] Domain query/accessor methods returning mutable child entities wrap them in read-only entities
+- [ ] Domain query/accessor methods returning collections return unmodifiable collections
+- [ ] Mapper signatures are not required to replace `{Entity}` with `ReadOnly{Entity}` when the aggregate returns a `ReadOnly{Entity}` runtime instance
 - [ ] Has no framework, repository, persistence, or adapter dependencies
 
 ---

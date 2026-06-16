@@ -124,6 +124,7 @@ LOAD_PATTERNS:
 - `DateProvider.now()` for timestamps, NOT `Instant.now()`
 - State set ONLY in `when()` method (Event Sourcing golden rule)
 - Mutable child entities exposed by aggregate accessors MUST be returned as `ReadOnly{Entity}`
+- Use case mapper signatures MAY keep `{Entity}` parameters when `ReadOnly{Entity}` extends `{Entity}`; verify the aggregate supplies read-only runtime instances instead of substituting mapper types by default
 
 #### Step 4.1.5 — Generate Contract Tests (if applicable)
 

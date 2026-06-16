@@ -31,7 +31,7 @@ How do you safely return child entities from an aggregate?
 
 Return a read-only entity whenever an aggregate exposes an internal mutable child entity.
 
-From the caller's perspective, the returned object represents the same domain concept. However, state-changing methods are overridden to throw `UnsupportedOperationException`. Query methods remain usable, but they must not leak mutable entities or mutable collections.
+From the caller's perspective, the returned object represents the same domain concept and may keep the original entity type in method signatures. However, the runtime instance returned by the aggregate must be `ReadOnly{Entity}`. State-changing methods are overridden to throw `UnsupportedOperationException`. Domain query/accessor methods remain usable, but they must not leak mutable entities or mutable collections.
 
 ## Default Implementation: Special Case
 
@@ -98,9 +98,9 @@ void rename(String newName) {
 
 This includes package-private mutation methods. Even if external callers cannot normally access package-private methods, overriding them documents and preserves the invariant inside the package and tests.
 
-### Rule 2: Inherit Safe Query Methods
+### Rule 2: Inherit Safe Domain Query/Accessor Methods
 
-Query methods returning primitives, strings, enums, value objects, immutable timestamps, or IDs may be inherited.
+Domain query/accessor methods returning primitives, strings, enums, value objects, immutable timestamps, or IDs may be inherited.
 
 ```java
 // Safe to inherit
@@ -109,9 +109,9 @@ public String getName() { return name; }
 public TaskState getState() { return state; }
 ```
 
-### Rule 3: Wrap Query Methods Returning Entities
+### Rule 3: Wrap Domain Query/Accessor Methods Returning Entities
 
-If a query method returns another mutable child entity, override it and return the read-only version.
+If a domain query/accessor method returns another mutable child entity, override it and return the read-only version.
 
 ```java
 @Override
@@ -120,7 +120,7 @@ public Member leader() {
 }
 ```
 
-### Rule 4: Wrap Query Methods Returning Collections
+### Rule 4: Wrap Domain Query/Accessor Methods Returning Collections
 
 Never return a mutable collection from a read-only entity.
 
@@ -169,6 +169,22 @@ public List<Task> getTasks() {
 }
 ```
 
+## Mapper Signature Rules
+
+Do not force mapper method signatures to use `ReadOnly{Entity}` when the Special Case implementation is used. Because `ReadOnly{Entity}` extends `{Entity}`, use case mappers may keep the original entity type from the JSON spec while still receiving a read-only runtime instance from the aggregate.
+
+```java
+// CORRECT: mapper keeps the ubiquitous domain type
+TaskDto toDto(Task task);
+List<TaskDto> toDtoList(List<Task> tasks);
+
+// The aggregate accessor still returns read-only runtime instances
+Task task = productBacklogItem.getTask(taskId);
+assert task instanceof ReadOnlyTask;
+```
+
+Only use `ReadOnly{Entity}` in mapper signatures when the Proxy implementation exposes an entity interface that makes this type part of the intended domain API. The required protection is the aggregate's read-only exposure, not mapper type substitution.
+
 ## Naming and Location
 
 | Artifact | Rule |
@@ -184,7 +200,7 @@ public List<Task> getTasks() {
 Generate `ReadOnly{Entity}.java` when all are true:
 
 1. `spec.entities[]` contains a mutable child entity.
-2. The aggregate exposes that entity through an accessor, query, or use case output.
+2. The aggregate exposes that entity through a domain accessor or uses it to supply a use case mapper/query result.
 3. The returned entity is not a value object, DTO, projection, or immutable record.
 
 Do not generate read-only entities for immutable record entities unless they contain mutable entity references or mutable collections.
@@ -220,8 +236,9 @@ void aggregateReturnsReadOnlyTask() {
 - Aggregate accessors do not return mutable child entities directly.
 - `ReadOnly{Entity}` exists for each externally exposed mutable child entity.
 - All mutation methods are overridden and throw `UnsupportedOperationException`.
-- Query methods returning mutable child entities wrap results in read-only versions.
-- Query methods returning collections return unmodifiable collections.
+- Domain query/accessor methods returning mutable child entities wrap results in read-only versions.
+- Domain query/accessor methods returning collections return unmodifiable collections.
+- Mapper signatures are not required to substitute `ReadOnly{Entity}` for `{Entity}` when `ReadOnly{Entity}` extends `{Entity}`.
 - Read-only entities stay in the domain `entity` package and do not depend on framework or persistence classes.
 
 ## Related Patterns

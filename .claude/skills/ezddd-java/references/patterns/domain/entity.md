@@ -518,7 +518,7 @@ public Task(TaskId id, String name) {
 
 <!-- @authority: read_only_entity_exposure | source: patterns/domain/read-only-entity.md -->
 
-If a mutable child entity is returned from an aggregate accessor or use case output, generate a `ReadOnly{Entity}` wrapper and have the aggregate return that wrapper instead of the mutable entity.
+If a mutable child entity is returned from an aggregate accessor or supplied by the aggregate to a use case mapper/query result, generate a `ReadOnly{Entity}` wrapper and have the aggregate return that wrapper instead of the mutable entity. Do not require mapper signatures to replace `{Entity}` with `ReadOnly{Entity}` when `ReadOnly{Entity}` extends `{Entity}`.
 
 ```java
 // CORRECT: exposed child entity is read-only
