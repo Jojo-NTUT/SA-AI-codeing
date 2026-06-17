@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9125b1ee-4e06-4d7f-944b-881da3ebaf51" name="Changes" comment="Add PBI and Task entities with corresponding DTOs and mappers" />
+    <list default="true" id="9125b1ee-4e06-4d7f-944b-881da3ebaf51" name="Changes" comment="Update README to include Read-only Entity Pattern implementation details and usage examples">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai-scrum-course.iws" beforeDir="false" afterPath="$PROJECT_DIR$/ai-scrum-course.iws" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,24 +42,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JUnit.CreateTaskServiceReadOnlyEntityTest.executor": "Run",
-    "JUnit.GetTasksByProductBacklogItemServiceTest.executor": "Run",
-    "JUnit.ProductBacklogItemReadOnlyTaskTest.aggregateReturnsReadOnlyTaskFromAccessor.executor": "Run",
-    "JUnit.ProductBacklogItemReadOnlyTaskTest.taskCanBeCreatedThroughAggregateButExposedTaskReferenceIsReadOnly.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/ASUS/OneDrive/Desktop/軟架/ai-coding-exercise-skills-uc",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.CreateTaskServiceReadOnlyEntityTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GetTasksByProductBacklogItemServiceTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductBacklogItemReadOnlyTaskTest.aggregateReturnsReadOnlyTaskFromAccessor.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ProductBacklogItemReadOnlyTaskTest.taskCanBeCreatedThroughAggregateButExposedTaskReferenceIsReadOnly.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ASUS/OneDrive/Desktop/軟架/ai-coding-exercise-skills-uc&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="JUnit.GetTasksByProductBacklogItemServiceTest">
     <configuration name="CreateTaskServiceReadOnlyEntityTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="ai-scrum-course" />
@@ -145,7 +148,8 @@
       <option name="presentableId" value="Default" />
       <updated>1781620640568</updated>
       <workItem from="1781620642752" duration="338000" />
-      <workItem from="1781621071862" duration="2023000" />
+      <workItem from="1781621071862" duration="2622000" />
+      <workItem from="1781676412961" duration="1789000" />
     </task>
     <task id="LOCAL-00001" summary="Add PBI and Task entities with corresponding DTOs and mappers">
       <option name="closed" value="true" />
@@ -155,7 +159,15 @@
       <option name="project" value="LOCAL" />
       <updated>1781622803766</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Update README to include Read-only Entity Pattern implementation details and usage examples">
+      <option name="closed" value="true" />
+      <created>1781623672949</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1781623672949</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -163,6 +175,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add PBI and Task entities with corresponding DTOs and mappers" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add PBI and Task entities with corresponding DTOs and mappers" />
+    <MESSAGE value="Update README to include Read-only Entity Pattern implementation details and usage examples" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update README to include Read-only Entity Pattern implementation details and usage examples" />
   </component>
 </project>

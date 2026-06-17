@@ -53,7 +53,7 @@ https://gitlab.com/TeddyChen/ai-coding-exercise-skills-uc
 - 在 UC Executor 相關文件中補充 Read-only Entity Pattern 的讀取與套用時機。
 - 在 Gate 2.5 deterministic review rules 中加入 Aggregate accessor 是否直接暴露 mutable child entity 的檢查。
 
-## 實作案例
+## 實作對象
 
 本作業選擇 `ProductBacklogItem` 作為目標 Aggregate，因為它會管理 child entity `Task`。
 
@@ -83,6 +83,10 @@ https://gitlab.com/TeddyChen/ai-coding-exercise-skills-uc
 
 - 建立 task 時，狀態改變仍然必須透過 `ProductBacklogItem` Aggregate。
 - 查詢 task 時，對外取得的 task 只能讀取，不能透過 entity reference 修改內部狀態。
+
+生成程式碼使用的命令：
+- execute-uc --only-inmemory .dev/specs/pbi/usecase/create-task.json
+- execute-uc --only-inmemory .dev/specs/pbi/usecase/get-tasks-by-pbi.json
 
 ## 測試重點
 
