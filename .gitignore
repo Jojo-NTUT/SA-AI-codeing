@@ -2,6 +2,7 @@
 /target
 /Tomcat9.0/webapps/
 *.iml
+*.iws
 
 
 ### sinology ###
