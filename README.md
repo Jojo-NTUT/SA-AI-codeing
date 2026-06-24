@@ -282,9 +282,9 @@ return GetTasksByProductBacklogItemOutput.create()
 > <br>- Query use case：.dev/specs/pbi/usecase/get-tasks-by-pbi.json
 > <br>附件為read only entity pattern的定義pdf檔
 
-目前測試主要確認三件事：
+目前測試主要確認四件事：
 
-第一，從 Aggregate 取出的單一 task 是 `ReadOnlyTask`，而且 mutation method 會被擋下來：
+#### [從 Aggregate 取出的單一 task 是 `ReadOnlyTask`，而且 mutation method 會被擋下來](https://github.com/Jojo-NTUT/SA-AI-codeing/blob/main/src/test/java/tw/teddysoft/aiscrum/pbi/entity/ProductBacklogItemReadOnlyTaskTest.java)
 
 ```java
 Task exposedTask = pbi.getTask(taskId);
@@ -296,7 +296,7 @@ assertEquals(TaskState.TODO, exposedTask.getState());
 assertAllMutationsRejected(exposedTask);
 ```
 
-第二，從 `getTasks()` 拿到的 list 裡，每一個 task 也都是 `ReadOnlyTask`，而且 list 本身不能直接 add 新 task。
+#### [從 `getTasks()` 拿到的 list 裡，每一個 task 也都是 `ReadOnlyTask`，而且 list 本身不能直接 add 新 task。](https://github.com/Jojo-NTUT/SA-AI-codeing/blob/main/src/test/java/tw/teddysoft/aiscrum/pbi/entity/ProductBacklogItemReadOnlyTaskTest.java)
 
 ```java
 List<Task> exposedTasks = pbi.getTasks();
@@ -311,7 +311,8 @@ assertThrows(UnsupportedOperationException.class, () ->
         exposedTasks.add(new Task(TaskId.valueOf("task-003"), pbi.getId(), "Bypass aggregate", null)));
 ```
 
-第三，use case 執行後也符合這個規則。以 create-task use case 的測試來看，service 建立 task 並存回 repository 後，再從 Aggregate 取出的 task 仍然是 `ReadOnlyTask`。
+#### [Command use case 符合規則](https://github.com/Jojo-NTUT/SA-AI-codeing/blob/main/src/test/java/tw/teddysoft/aiscrum/pbi/usecase/service/CreateTaskServiceReadOnlyEntityTest.java)
+以 create-task use case 的測試來看，service 建立 task 並存回 repository 後，再從 Aggregate 取出的 task 仍然是 `ReadOnlyTask`。
 
 ```java
 CqrsOutput<?> output = service.execute(input);
@@ -322,6 +323,25 @@ Task exposedTask = savedPbi.getTask(TaskId.valueOf("task-001"));
 assertEquals(ExitCode.SUCCESS, output.getExitCode());
 assertInstanceOf(ReadOnlyTask.class, exposedTask);
 assertRenameRejectedEvenIfCallerForcesAccess(exposedTask);
+```
+
+#### [Query use case 符合規則](https://github.com/Jojo-NTUT/SA-AI-codeing/blob/main/src/test/java/tw/teddysoft/aiscrum/pbi/usecase/service/GetTasksByProductBacklogItemServiceTest.java)
+以 get-tasks-by-pbi use case 的測試來看，projection 透過 Aggregate accessor 取得 tasks 時，拿到的是 `ReadOnlyTask`，最後再透過 mapper 轉成 `TaskDto` 對外回傳。
+
+```java
+TasksDtoProjection projection = input -> {
+    List<Task> tasks = pbi.getTasks();
+    tasks.forEach(task -> assertInstanceOf(ReadOnlyTask.class, task));
+    return TaskMapper.toDtoList(tasks);
+};
+
+GetTasksByProductBacklogItemOutput output = service.execute(input);
+
+assertEquals(ExitCode.SUCCESS, output.getExitCode());
+assertEquals(1, output.getTasks().size());
+assertEquals("task-001", output.getTasks().get(0).id());
+assertEquals("Design authentication API", output.getTasks().get(0).name());
+assertEquals("TODO", output.getTasks().get(0).state());
 ```
 
 ## 遇到的問題
