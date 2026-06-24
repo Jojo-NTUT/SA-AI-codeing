@@ -41,73 +41,64 @@ https://gitlab.com/TeddyChen/ai-coding-exercise-skills-uc
 
 ### `.claude/skills/ezddd-java/references/patterns/domain/read-only-entity.md`
 
-- 此Skill 檔案的目的是：
-  這個檔案是整個 Read-only Entity Pattern 的主說明，讓 agent 有一個固定來源可以理解「為什麼 Aggregate 不能把 mutable child entity 直接交出去」。
-- 為了Read-only Entity Pattern新增的內容：
-  補上 `ReadOnly{Entity}` 的命名規則、Special Case 繼承做法、constructor 寫法、mutation method 要覆寫並丟出 `UnsupportedOperationException`，以及 query/accessor method 如果回傳 mutable entity 或 collection，就要再包成 read-only 或不可修改集合。
+- 檔案目的：整個 Read-only Entity Pattern 的主說明，讓 agent 有一個固定來源可以理解「為什麼 Aggregate 不能把 mutable child entity 直接交出去」。
+- 新增內容：
+  - `ReadOnly{Entity}` 的命名規則
+  - Special Case 繼承做法
+  - constructor 寫法
+  - mutation method 要覆寫並丟出 `UnsupportedOperationException`
+  - query/accessor method 如果回傳 mutable entity 或 collection，就要再包成 read-only 不可修改集合。
 
 ### `.claude/skills/ezddd-java/references/patterns/domain/entity.md`
 
-- 此Skill 檔案的目的是：
-  這個檔案負責告訴 agent Entity 要怎麼產生，所以它要能判斷哪些 child entity 只是一般 entity，哪些 entity 需要額外做 read-only 保護。
-- 為了Read-only Entity Pattern新增的內容：
-  補上「mutable child entity 只要會被 Aggregate 對外回傳，就要搭配 `ReadOnly{Entity}`」的規則。這對應到 pattern 設計中的命名規則與觸發條件，也就是 `Task` 這種會變動又可能被外部讀取的 entity，要額外產生 `ReadOnlyTask`。
+- 檔案目的：告訴 agent Entity 要怎麼產生，所以它要能判斷哪些 child entity 只是一般 entity，哪些 entity 需要額外做 read-only 保護。
+- 新增內容：補上「mutable child entity 只要會被 Aggregate 對外回傳，就要搭配 `ReadOnly{Entity}`」的規則。
 
 ### `.claude/skills/ezddd-java/references/patterns/domain/aggregate.md`
 
-- 此Skill 檔案的目的是：
-  這個檔案負責 Aggregate Root 的設計規則，也是 Read-only Entity Pattern 最重要的落點，因為 child entity 是否被裸露出去，就是在 Aggregate accessor 發生的。
-- 為了Read-only Entity Pattern新增的內容：
-  補上 Aggregate 不可以直接回傳 mutable child entity 的規則。單一 accessor 要回傳 `new ReadOnly{Entity}(entity)`，collection accessor 要把每個 entity 都轉成 read-only，並且回傳不可修改集合。這對應到「只能透過 Aggregate 修改 entity，外部只能讀」的核心設計。
+- 檔案目的：負責 Aggregate Root 的設計規則。
+- 新增內容：補上 Aggregate 不可以直接回傳 mutable child entity 的規則。
+  - 單一 accessor 要回傳 `new ReadOnly{Entity}(entity)`
+  - collection accessor 要把每個 entity 都轉成 read-only，並且回傳不可修改集合。
 
 ### `.claude/skills/ezddd-java/references/rules/domain-patterns.md`
 
-- 此Skill 檔案的目的是：
-  這個檔案是 domain layer 的總規則，讓 agent 不只在讀詳細 pattern 時才想到 Read-only Entity，而是在做 domain 設計判斷時就會先檢查 Aggregate 邊界。
-- 為了Read-only Entity Pattern新增的內容：
-  補上「Aggregate 對外暴露 mutable child entity 時，必須回傳 `ReadOnly{Entity}`」的 domain rule。這對應到 pattern 設計中的 Aggregate 邊界保護，以及 primitive、enum、value object、ID 這類本來就不可變或只讀的資料可以直接回傳。
+- 檔案目的：domain layer 的總規則，讓 agent 不只在讀詳細 pattern 時才想到 Read-only Entity，而是在做 domain 設計判斷時就會先檢查 Aggregate 邊界。
+- 新增內容：補上「Aggregate 對外暴露 mutable child entity 時，必須回傳 `ReadOnly{Entity}`」的 domain rule。
 
 ### `.claude/skills/ezddd-java/references/code-reviewer/checklist.md`
 
-- 此Skill 檔案的目的是：
-  這個檔案是 code review 用的檢查清單，讓 reviewer 可以在人工或 agent review 時抓出 Read-only Entity Pattern 有沒有漏做。
-- 為了Read-only Entity Pattern新增的內容：
-  補上 `ReadOnly*.java` 和 Aggregate accessor 的檢查項目：有沒有直接回傳 mutable child entity、read-only class 命名和位置對不對、mutation method 有沒有全部覆寫並丟出 `UnsupportedOperationException`、collection 會不會被外部修改。這對應到 pattern 設計中的 fail-fast 保護和不可修改集合規則。
+- 檔案目的：code review 用的檢查清單，讓 reviewer 可以在人工或 agent review 時抓出 Read-only Entity Pattern 有沒有漏做。
+- 新增內容：補上 `ReadOnly*.java` 和 Aggregate accessor 的檢查項目
+  - 有沒有直接回傳 mutable child entity
+  - read-only class 命名和位置對不對
+  - mutation method 有沒有全部覆寫並丟出 `UnsupportedOperationException`
+  - collection 會不會被外部修改
 
 ### `.claude/skills/ezddd-java/references/AUTHORITY-REGISTRY.yaml`
 
-- 此Skill 檔案的目的是：
-  這個檔案是 skill 裡的權威來源登記表，負責告訴 agent：Read-only Entity Pattern 的正式定義要以哪個文件為準。
-- 為了Read-only Entity Pattern新增的內容：
-  加入 `read_only_entity_exposure`，並指向 `patterns/domain/read-only-entity.md`。這樣 Aggregate、Entity、code review、Gate 2.5 等地方提到「不能暴露 mutable child entity」時，都能回到同一個 pattern 定義，不會每個檔案各自解釋一套。
+- 檔案目的：skill 的來源登記表，負責告訴 agent：Read-only Entity Pattern 的正式定義要以哪個文件為準。
+- 新增內容：加入 `read_only_entity_exposure`，並指向 `patterns/domain/read-only-entity.md`。
 
 ### `.claude/skills/ezddd-java/SKILL.md`
 
-- 此Skill 檔案的目的是：
-  這個檔案是 agent 進入 `ezddd-java` skill 時最先看的入口，所以它要讓 agent 知道 Read-only Entity 是 domain layer 的正式 pattern。
-- 為了Read-only Entity Pattern新增的內容：
-  在 Domain Layer pattern 表格加入 Read-only Entity Pattern，並標明使用時機是「Aggregate 對外暴露 mutable child Entity」。這對應到 pattern 的觸發條件，讓 agent 遇到這種情境時會主動去讀 `read-only-entity.md`。
+- 檔案目的：agent 進入 `ezddd-java` skill 時先看的入口，所以要讓 agent 知道 Read-only Entity 是 domain layer 的正式 pattern。
+- 新增內容：在 Domain Layer pattern 表格加入 Read-only Entity Pattern，並標明使用時機是「Aggregate 對外暴露 mutable child Entity」。
 
 ### `.claude/skills/ezddd-java/references/uc-executor/uc-workflow.md`
 
-- 此Skill 檔案的目的是：
-  這個檔案負責 UC Executor 從 JSON spec 產生程式碼的流程，所以它要告訴 agent 什麼時候該載入 Read-only Entity Pattern。
-- 為了Read-only Entity Pattern新增的內容：
-  補上在產生 use case、Aggregate accessor、Mapper、DTO 或測試前，如果發現 mutable child entity 會被對外回傳，就要先讀 `read-only-entity.md`。這對應到作業流程中「用更新過的 skill 產 use case 程式碼，並確認 pattern 有被套用」的設計。
+- 檔案目的：負責 UC Executor 從 JSON spec 產生程式碼的流程，告訴 agent 什麼時候該載入 Read-only Entity Pattern。
+- 新增內容：補上在產生 use case、Aggregate accessor、Mapper、DTO 或測試前，如果發現 mutable child entity 會被對外回傳，就要先讀 `read-only-entity.md`。
 
 ### `.claude/skills/ezddd-java/references/uc-executor/json-to-pattern-mapping.md`
 
-- 此Skill 檔案的目的是：
-  這個檔案負責把 JSON spec 的線索對應到要使用的 pattern，讓 agent 不只照欄位產生程式碼，也能從 spec 推論出該用哪個設計。
-- 為了Read-only Entity Pattern新增的內容：
-  補上 `spec.entities[]`、entity 是否 exposed、Aggregate accessor return 等線索要對應到 `ReadOnly{Entity}`。同時也補充 mapper 簽名不一定要改成 `ReadOnly{Entity}`，因為 Special Case 是讓 `ReadOnly{Entity}` 繼承原 entity，真正重要的是 Aggregate 回傳的 runtime instance 必須是 read-only。
+- 檔案目的：負責把 JSON spec 的線索對應到要使用的 pattern，讓 agent 不只照欄位產生程式碼，也能從 spec 推論出該用哪個設計。
+- 新增內容：補上 `spec.entities[]`、entity 是否 exposed、Aggregate accessor return 等線索要對應到 `ReadOnly{Entity}`。
 
 ### `.claude/skills/ezddd-java/references/gate25/deterministic-review-rules.yaml`
 
-- 此Skill 檔案的目的是：
-  這個檔案是 Gate 2.5 的確定性檢查規則，用來在 agent 產生程式碼後，自動抓出明確違反規則的地方。
-- 為了Read-only Entity Pattern新增的內容：
-  新增 Aggregate accessor 直接回傳 mutable child entity 的檢查。這對應到 pattern 設計裡最核心的風險：外部不能拿到 Aggregate 內部真正可修改的 child entity reference；如果 agent 忘了包成 `ReadOnly{Entity}`，Gate 2.5 就有機會把它擋下來。
+- 檔案目的：用在 agent 產生程式碼後，自動抓出明確違反規則的地方。
+- 新增內容：新增 Aggregate accessor 直接回傳 mutable child entity 的檢查。
 
 ## 確認目標 Aggregate
 > 找出會回傳資料出去的Aggregate：
