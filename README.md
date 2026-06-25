@@ -61,6 +61,8 @@ https://gitlab.com/TeddyChen/ai-coding-exercise-skills-uc
   - 單一 accessor 要回傳 `new ReadOnly{Entity}(entity)`
   - collection accessor 要把每個 entity 都轉成 read-only，並且回傳不可修改集合。
 
+[舊版readme](https://github.com/Jojo-NTUT/SA-AI-codeing/tree/9443edfe232d40ae64a69101a21cbc41239cfa4f)
+
 ## 確認目標 Aggregate
 > 找出會回傳資料出去的Aggregate：
 > <br>1. 會向外傳entity或是collection of entity
